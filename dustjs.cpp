@@ -23,10 +23,10 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	// Parse the model into a native JSON object
 	Handle<ObjectTemplate> json = ObjectTemplate::New();
 
-    map<string, string>::const_iterator iter;
+	map<string, string>::const_iterator iter;
 
 	for (iter = model.begin(); iter != model.end(); iter++) {
-    	json->Set(String::New(iter->first.c_str()), String::New(iter->second.c_str()));
+		json->Set(String::New(iter->first.c_str()), String::New(iter->second.c_str()));
 	}
 
 	// Populate the global scope
