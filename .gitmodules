@@ -1,0 +1,6 @@
+[submodule "lib/v8"]
+	path = lib/v8
+	url = https://github.com/v8/v8.git
+[submodule "lib/dustjs"]
+	path = lib/dustjs
+	url = https://github.com/linkedin/dustjs.git
