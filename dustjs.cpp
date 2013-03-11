@@ -1,9 +1,7 @@
 #include <string>
-//#include <iostream>
-//#include <fstream>
-//#include <cerrno>
+#include <iostream>
 #include <map>
-#include <v8.h>
+#include "lib/v8/include/v8.h"
 #include "dustJs.h"
 
 
@@ -66,7 +64,10 @@ class DustJs {
 		}
 
 
-		static int compile (std::string filename);
+		static int compile (std::string filename) {
+			// Unimplemented
+			return 1;
+		}
 
 
 	protected:
@@ -74,7 +75,11 @@ class DustJs {
 			String::Utf8Value err(args[0]);
 			String::Utf8Value data(args[1]);
 
-			printf("%s\n", *data);
+			if (data.length() > 0) {
+				printf("%s\n", *data);
+			} else {
+				printf("%s\n", *err);
+			}
 
 			return Undefined();
 		}
@@ -108,7 +113,6 @@ class DustJs {
 };
 
 
-
 int main(int argc, char **argv) {
 	if (argc < 2) {
 		printf("Usage: %s template \n", argv[0]);
@@ -117,8 +121,8 @@ int main(int argc, char **argv) {
 
 	map<string, string> model;
 
-	model["name"] = "John Doe";
-	model["count"] = "3000";
+	model["name"] = "Jeff Harrell";
+	model["count"] = "30";
 
 	return DustJs::render("sample/template", model);
 }
