@@ -5,7 +5,7 @@
 #include "dustJs.h"
 
 
-#define DUST_JS "lib/dustjs/lib/dust.js"
+#define DUST_JS "lib/dustjscpp/lib/dustjs/lib/dust.js" //FIXME
 #define DUST_EXT ".js"
 #define DUST_RENDER "dust.render(template, model, callback);"
 
