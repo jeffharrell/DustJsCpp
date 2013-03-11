@@ -7,8 +7,8 @@
 class DustJs {
 
 	public:
-		int render(const std::string filename, const std::map<std::string, std::string> &model);
-		int compile(const std::string filename);
+		static int render(const std::string filename, const std::map<std::string, std::string> &model);
+		static int compile(const std::string filename);
 
 	protected:
 		static v8::Handle<v8::Value> onRender(const v8::Arguments &args);
