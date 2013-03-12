@@ -7,6 +7,7 @@
 
 #define DUST_JS "../lib/dustjscpp/lib/dustjs/dist/dust-full-1.2.0.js" //FIXME
 #define DUST_RENDER "dust.render(template, model, callback);"
+#define DUST_COMPILE "dust.compile(source, name);"
 
 
 using namespace std;
@@ -44,7 +45,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 
 // Performs a dust.compile() inside of the v8 JavaScript environment
 int DustJs::compile (const string filename) {
-	// Unimplemented
+	// TODO
 	return 1;
 }
 

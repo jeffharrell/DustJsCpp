@@ -1,13 +1,12 @@
-CC=g++
-CFLAGS=-Wall
-INCLUDES=-Ilib/v8/include
-LIBS=lib/v8/out/x64.release/libv8_base.a lib/v8/out/x64.release/libv8_snapshot.a
+main: dustjs.o
+	ar rvs dustjs.a dustjs.o
 
-main:
-	mkdir -p ./out && $(CC) $(CFLAGS) $(INCLUDES) ./dustjs.cpp -o ./out/dustjs $(LIBS) -lpthread
+dustjs.o:
+	g++ -c dustjs.cpp
 
 clean:
-	rm -rf out/*
+	rm dustjs.a
+	rm dustjs.o
 
 dependencies:
 	$(MAKE) -C lib/v8 dependencies && $(MAKE) -C lib/v8 x64 -j 8
