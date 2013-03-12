@@ -14,7 +14,7 @@ class DustJs {
 		static v8::Handle<v8::Value> onRender(const v8::Arguments &args);
 
 	private:
-		static v8::Handle<v8::String> load(const std::string &name);
+		static std::string load(const std::string &name);
 
 };
 

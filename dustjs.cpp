@@ -5,8 +5,7 @@
 #include "dustJs.h"
 
 
-#define DUST_JS "lib/dustjscpp/lib/dustjs/lib/dust.js" //FIXME
-#define DUST_EXT ".js"
+#define DUST_JS "../lib/dustjscpp/lib/dustjs/dist/dust-full-1.2.0.js" //FIXME
 #define DUST_RENDER "dust.render(template, model, callback);"
 
 
@@ -15,7 +14,7 @@ using namespace v8;
 
 
 int DustJs::render(const string filename, const map<string, string> &model) {
-	const string tmpl = filename + DUST_EXT;
+	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
 	// Create a stack-allocated handle scope
 	HandleScope handle_scope;
@@ -33,24 +32,24 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	Handle<ObjectTemplate> global = ObjectTemplate::New();
 
 	global->Set(String::New("callback"), FunctionTemplate::New(DustJs::onRender));
-	global->Set(String::New("template"), String::New(filename.c_str()));
+	global->Set(String::New("template"), String::New(tmpl.c_str()));
 	global->Set(String::New("model"), json);
 
-	// Create a new context
+
+	// Create a new context with the global scope
 	Persistent<Context> context = Context::New(NULL, global);
 
 	// Enter the created context
 	Context::Scope context_scope(context);
 
 	// Create a string containing the JavaScript source code
-	Handle<String> dust_source = load(DUST_JS);
-	Handle<String> tmpl_source = load(tmpl);
-	Handle<String> render_source = String::New(DUST_RENDER);
+	const string dust_source = load(DUST_JS);
+	const string tmpl_source = load(filename);
 
 	// Compile the source code
-	Handle<Script> dust_script = Script::Compile(dust_source);
-	Handle<Script> tmpl_script = Script::Compile(tmpl_source);
-	Handle<Script> render_script = Script::Compile(render_source);
+	Handle<Script> dust_script = Script::Compile(String::New(dust_source.c_str()));
+	Handle<Script> tmpl_script = Script::Compile(String::New(tmpl_source.c_str()));
+	Handle<Script> render_script = Script::Compile(String::New(DUST_RENDER));
 
 	// Run the script to get the result
 	Handle<Value> dust_result = dust_script->Run();
@@ -81,10 +80,10 @@ Handle<Value> DustJs::onRender(const Arguments &args) {
 }
 
 
-// Reads a file into a v8 string
-Handle<String> DustJs::load(const string &name) {
+// Reads a file
+string DustJs::load(const string &name) {
 	FILE* file = fopen(name.c_str(), "rb");
-	if (file == NULL) return Handle<String>();
+	if (file == NULL) return NULL;
 
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
@@ -99,8 +98,9 @@ Handle<String> DustJs::load(const string &name) {
 	}
 
 	fclose(file);
-	Handle<String> result = String::New(chars, size);
 
+	string result = string(chars);
 	delete[] chars;
+
 	return result;
 }
