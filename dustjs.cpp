@@ -13,54 +13,48 @@ using namespace std;
 using namespace v8;
 
 
-
+// Performs a dust.render() inside of the v8 JavaScript environment
 int DustJs::render(const string filename, const map<string, string> &model) {
 	HandleScope handle_scope;
 
+	// Get the base template name (minus the extension)
 	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
 	// Populate the global scope
 	Handle<ObjectTemplate> global = ObjectTemplate::New();
 
-	global->Set(String::New("callback"), FunctionTemplate::New(DustJs::onRender));
+	global->Set(String::New("callback"), FunctionTemplate::New(onRender));
 	global->Set(String::New("template"), String::New(tmpl.c_str()));
-	global->Set(String::New("model"), DustJs::mapToJson(model));
+	global->Set(String::New("model"), mapToJson(model));
 
-
-	// Create a new context with the global scope
+	// Create a new context with that global scope
 	Persistent<Context> context = Context::New(NULL, global);
 
 	// Enter the created context
 	Context::Scope context_scope(context);
 
-	// Create a string containing the JavaScript source code
-	const string dust_source = load(DUST_JS);
-	const string tmpl_source = load(filename);
-
-	// Compile the source code
-	Handle<Script> dust_script = Script::Compile(String::New(dust_source.c_str()));
-	Handle<Script> tmpl_script = Script::Compile(String::New(tmpl_source.c_str()));
-	Handle<Script> render_script = Script::Compile(String::New(DUST_RENDER));
-
-	// Execute the scripts
-	Handle<Value> dust_result = dust_script->Run();
-	Handle<Value> tmpl_result = tmpl_script->Run();
-	Handle<Value> render_result = render_script->Run();
+	// Load the JavaScript files
+	evalJs(loadFile(DUST_JS));
+	evalJs(loadFile(filename));
+	evalJs(DUST_RENDER);
 
 	return 0;
 }
 
 
+// Performs a dust.compile() inside of the v8 JavaScript environment
 int DustJs::compile (const string filename) {
 	// Unimplemented
 	return 1;
 }
 
 
+// Callback function used by JavaScript dust.render in DustJs::render
 Handle<Value> DustJs::onRender(const Arguments &args) {
 	String::Utf8Value err(args[0]);
 	String::Utf8Value data(args[1]);
 
+	// Output either the data or the error
 	if (data.length() > 0) {
 		printf("%s\n", *data);
 	} else {
@@ -71,6 +65,14 @@ Handle<Value> DustJs::onRender(const Arguments &args) {
 }
 
 
+// Executes the source code in the current v8 context
+void DustJs::evalJs(const string &source) {
+	Handle<Script> script = Script::Compile(String::New(source.c_str()));
+	script->Run();
+}
+
+
+// Creates a new JavaScript object inside of v8 and maps the model onto it
 Handle<ObjectTemplate> DustJs::mapToJson(const map<string, string> &model) {
 	Handle<ObjectTemplate> json = ObjectTemplate::New();
 
@@ -84,27 +86,20 @@ Handle<ObjectTemplate> DustJs::mapToJson(const map<string, string> &model) {
 }
 
 
-// Reads a file
-string DustJs::load(const string &name) {
-	FILE* file = fopen(name.c_str(), "rb");
-	if (file == NULL) return NULL;
+// Reads a file and returns it as a string
+string DustJs::loadFile(const string filename) {
+	FILE *fp = std::fopen(filename.c_str(), "rb");
 
-	fseek(file, 0, SEEK_END);
-	int size = ftell(file);
-	rewind(file);
+	if (fp) {
+		string contents;
+		fseek(fp, 0, SEEK_END);
+		contents.resize(ftell(fp));
+		rewind(fp);
+		fread(&contents[0], 1, contents.size(), fp);
+		fclose(fp);
 
-	char* chars = new char[size + 1];
-	chars[size] = '\0';
-
-	for (int i = 0; i < size;) {
-		int read = fread(&chars[i], 1, size - i, file);
-		i += read;
+		return(contents);
 	}
 
-	fclose(file);
-
-	string result = string(chars);
-	delete[] chars;
-
-	return result;
+  return NULL;
 }
