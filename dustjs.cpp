@@ -13,27 +13,18 @@ using namespace std;
 using namespace v8;
 
 
-int DustJs::render(const string filename, const map<string, string> &model) {
-	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
-	// Create a stack-allocated handle scope
+int DustJs::render(const string filename, const map<string, string> &model) {
 	HandleScope handle_scope;
 
-	// Parse the model into a native JSON object
-	Handle<ObjectTemplate> json = ObjectTemplate::New();
-
-	map<string, string>::const_iterator iter;
-
-	for (iter = model.begin(); iter != model.end(); iter++) {
-		json->Set(String::New(iter->first.c_str()), String::New(iter->second.c_str()));
-	}
+	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
 	// Populate the global scope
 	Handle<ObjectTemplate> global = ObjectTemplate::New();
 
 	global->Set(String::New("callback"), FunctionTemplate::New(DustJs::onRender));
 	global->Set(String::New("template"), String::New(tmpl.c_str()));
-	global->Set(String::New("model"), json);
+	global->Set(String::New("model"), DustJs::mapToJson(model));
 
 
 	// Create a new context with the global scope
@@ -51,7 +42,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	Handle<Script> tmpl_script = Script::Compile(String::New(tmpl_source.c_str()));
 	Handle<Script> render_script = Script::Compile(String::New(DUST_RENDER));
 
-	// Run the script to get the result
+	// Execute the scripts
 	Handle<Value> dust_result = dust_script->Run();
 	Handle<Value> tmpl_result = tmpl_script->Run();
 	Handle<Value> render_result = render_script->Run();
@@ -77,6 +68,19 @@ Handle<Value> DustJs::onRender(const Arguments &args) {
 	}
 
 	return Undefined();
+}
+
+
+Handle<ObjectTemplate> DustJs::mapToJson(const map<string, string> &model) {
+	Handle<ObjectTemplate> json = ObjectTemplate::New();
+
+	map<string, string>::const_iterator iter;
+
+	for (iter = model.begin(); iter != model.end(); iter++) {
+		json->Set(String::New(iter->first.c_str()), String::New(iter->second.c_str()));
+	}
+
+	return json;
 }
 
 

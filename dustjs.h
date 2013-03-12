@@ -15,6 +15,7 @@ class DustJs {
 
 	private:
 		static std::string load(const std::string &name);
+		static v8::Handle<v8::ObjectTemplate> mapToJson(const std::map<std::string, std::string> &model);
 
 };
 
