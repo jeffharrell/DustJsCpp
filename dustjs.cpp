@@ -2,10 +2,10 @@
 #include <iostream>
 #include <map>
 #include "lib/v8/include/v8.h"
-#include "dustJs.h"
+#include "dustjs.h"
+#include "libdust.h"
 
 
-#define DUST_JS "../lib/dustjscpp/lib/dustjs/dist/dust-full-1.2.0.js" //FIXME
 #define DUST_RENDER "dust.render(template, model, callback);"
 #define DUST_COMPILE "dust.compile(source, name);"
 
@@ -17,6 +17,11 @@ using namespace v8;
 // Performs a dust.render() inside of the v8 JavaScript environment
 int DustJs::render(const string filename, const map<string, string> &model) {
 	HandleScope handle_scope;
+
+	// Get the dust library from libdust.h
+	// The lib_dust_js char is created at make time and used to bundle the
+	// JavaScript rather than dynamically loading it from an arbitrary location
+	const char* lib_dust = reinterpret_cast<const char*>(lib_dust_js);
 
 	// Get the base template name (minus the extension)
 	const string tmpl = filename.substr(0, filename.find_last_of("."));
@@ -35,7 +40,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	Context::Scope context_scope(context);
 
 	// Load the JavaScript files
-	evalJs(loadFile(DUST_JS));
+	evalJs(lib_dust);
 	evalJs(loadFile(filename));
 	evalJs(DUST_RENDER);
 

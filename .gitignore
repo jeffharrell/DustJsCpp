@@ -1,5 +1,6 @@
 .DS_Store
-out
+libdust.h
+libcompiler.h
 *.out
 *.a
 *.o
