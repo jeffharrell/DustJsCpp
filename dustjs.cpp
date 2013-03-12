@@ -102,5 +102,5 @@ string DustJs::loadFile(const string filename) {
 		return(contents);
 	}
 
-  return NULL;
+	return NULL;
 }
