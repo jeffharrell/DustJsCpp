@@ -9,7 +9,12 @@ git clone git://github.com/jeffharrell/DustJsCpp.git --recursive
 ```
 
 
-## Build the library
+## Build as a static library
 ```
 make dependencies && make
+```
+
+## Usage
+```
+DustJs::render(string templatePath, map<string, string> dataModel);
 ```
