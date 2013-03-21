@@ -29,6 +29,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	// Populate the global scope
 	Handle<ObjectTemplate> global = ObjectTemplate::New();
 
+	global->Set(String::New("dust.onLoad"), FunctionTemplate::New(onLoad));
 	global->Set(String::New("onRender"), FunctionTemplate::New(onRender));
 	global->Set(String::New("template"), String::New(tmpl.c_str()));
 	global->Set(String::New("model"), mapToJson(model));
@@ -41,7 +42,6 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 
 	// Load the JavaScript files
 	evalJs(lib_dust);
-	evalJs(loadFile(filename));
 	evalJs(DUST_RENDER);
 
 	return 0;
@@ -66,6 +66,19 @@ Handle<Value> DustJs::onRender(const Arguments &args) {
 	} else {
 		printf("%s\n", *err);
 	}
+
+	return Undefined();
+}
+
+
+// Method called from dust.render if a template is not in the cache
+Handle<Value> DustJs::onLoad(const Arguments &args) {
+	String::Utf8Value file(args[0]);
+	String::Utf8Value callback(args[1]);
+
+
+	printf("%s\n", *file);
+	printf("%s\n", *callback);
 
 	return Undefined();
 }

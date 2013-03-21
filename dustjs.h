@@ -12,6 +12,7 @@ class DustJs {
 
 	protected:
 		static v8::Handle<v8::Value> onRender(const v8::Arguments &args);
+		static v8::Handle<v8::Value> onLoad(const v8::Arguments &args);
 
 	private:
 		static void evalJs(const std::string &source);
