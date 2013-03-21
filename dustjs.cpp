@@ -6,7 +6,7 @@
 #include "libdust.h"
 
 
-#define DUST_RENDER "dust.render(template, model, callback);"
+#define DUST_RENDER "dust.render(template, model, onRender);"
 #define DUST_COMPILE "dust.compile(source, name);"
 
 
@@ -29,7 +29,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	// Populate the global scope
 	Handle<ObjectTemplate> global = ObjectTemplate::New();
 
-	global->Set(String::New("callback"), FunctionTemplate::New(onRender));
+	global->Set(String::New("onRender"), FunctionTemplate::New(onRender));
 	global->Set(String::New("template"), String::New(tmpl.c_str()));
 	global->Set(String::New("model"), mapToJson(model));
 
