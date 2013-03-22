@@ -1,7 +1,7 @@
 main: dustjs.o
 	ar rvs dustjs.a dustjs.o
 
-dustjs.o: libdust.h
+dustjs.o: libdust.h libcompiler.h libparser.h
 	g++ -c dustjs.cpp
 
 libdust.h:
@@ -9,6 +9,9 @@ libdust.h:
 
 libcompiler.h:
 	cd lib/dustjs/ && xxd -i lib/compiler.js ../../libcompiler.h
+
+libparser.h:
+	cd lib/dustjs/ && xxd -i lib/parser.js ../../libparser.h
 
 clean:
 	rm dustjs.a

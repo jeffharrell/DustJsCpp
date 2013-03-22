@@ -15,9 +15,9 @@ class DustJs {
 		static v8::Handle<v8::Value> onLoad(const v8::Arguments &args);
 
 	private:
-		static void evalJs(const std::string &source);
+		static void eval(const std::string &source);
 		static std::string loadFile(const std::string filename);
-		static v8::Handle<v8::ObjectTemplate> mapToJson(const std::map<std::string, std::string> &model);
+		static v8::Handle<v8::Object> mapToJson(const std::map<std::string, std::string> &model);
 
 };
 
