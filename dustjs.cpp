@@ -14,7 +14,6 @@ using namespace v8;
 
 // Performs a dust.js render inside of V8
 int DustJs::render(const string filename, const map<string, string> &model) {
-	// Get the base template name (minus the extension)
 	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
 	// Create a new scope
@@ -54,7 +53,7 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 }
 
 
-// Callback used by dust.render once it's rendered the template
+// Callback used by dust.render once it's finished the template
 Handle<Value> DustJs::onRender(const Arguments &args) {
 	if (args[0]->IsNull()) {
 		String::Utf8Value data(args[1]);
@@ -94,7 +93,7 @@ void DustJs::eval(const string &source) {
 }
 
 
-// Creates a new JavaScript object inside of V8 and maps the model onto it
+// Creates a new JavaScript object and maps the model onto it
 Handle<Object> DustJs::mapToJson(const map<string, string> &model) {
 	Handle<Object> json = Object::New();
 
@@ -108,7 +107,7 @@ Handle<Object> DustJs::mapToJson(const map<string, string> &model) {
 }
 
 
-// Reads a file and returns it as a string
+// Reads a file from disk
 string DustJs::loadFile(const string filename) {
 	FILE *fp = std::fopen(filename.c_str(), "rb");
 	string contents;
