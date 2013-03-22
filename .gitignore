@@ -1,6 +1,7 @@
 .DS_Store
 libdust.h
 libcompiler.h
+libparser.h
 *.out
 *.a
 *.o
