@@ -1,6 +1,6 @@
 # DustJsCpp
 
-An experimental C++ class for rendering a dust.js template using v8.
+An experimental C++ class for rendering a dust.js template using V8.
 
 ```
 git clone git://github.com/jeffharrell/DustJsCpp.git --recursive
@@ -8,12 +8,14 @@ git clone git://github.com/jeffharrell/DustJsCpp.git --recursive
 
 
 ## Build 
-```
-make dependencies && make
+```console
+$ make dependencies && make
 ```
 
 ## Usage
-```
+
+### renderer.cpp
+```cpp
 #include <string>
 #include <iostream>
 #include <map>
@@ -36,4 +38,14 @@ int main(int argc, char **argv) {
 
 	return DustJs::render(argv[1], model);
 }
+```
+
+### Input
+``` 
+./renderer sample/hello.js
+```
+
+### Output
+```
+Hey Jeff Harrell. ./renderer just rendered this!
 ```
