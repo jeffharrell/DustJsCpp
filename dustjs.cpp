@@ -13,7 +13,7 @@ using namespace v8;
 
 
 // Performs a dust.js render inside of V8
-int DustJs::render(const string filename, const map<string, string> &model) {
+int DustJs::render(const string filename, const map<string, string> &model, onRenderFn callback) {
 	const string tmpl = filename.substr(0, filename.find_last_of("."));
 
 	// Create a new scope
@@ -43,27 +43,13 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 
 	cbargs[0] = String::New(tmpl.c_str());
 	cbargs[1] = mapToJson(model);
-	cbargs[2] = FunctionTemplate::New(onRender)->GetFunction();
+	cbargs[2] = FunctionTemplate::New(callback)->GetFunction();
 
 	Handle<Function> render = Handle<Function>::Cast(dust->Get(String::New("render")));
 	render->Call(dust, 3, cbargs);
 
 	// Done!
 	return 0;
-}
-
-
-// Callback used by dust.render once it's finished the template
-Handle<Value> DustJs::onRender(const Arguments &args) {
-	if (args[0]->IsNull()) {
-		String::Utf8Value data(args[1]);
-		printf("%s\n", *data);
-	} else {
-		String::Utf8Value err(args[0]);
-		printf("%s\n", *err);
-	}
-
-	return Undefined();
 }
 
 
