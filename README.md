@@ -21,6 +21,24 @@ $ make dependencies && make
 #include <dustjs.h>
 
 using namespace std;
+using namespace v8;
+
+
+Handle<Value> onRender(const Arguments &args) {
+	// If dust does not return an error
+	if (args[0]->IsNull()) {
+		// args[1] is the rendered template
+		String::Utf8Value data(args[1]);
+		printf("%s\n", *data);
+	} else {
+		// Otherwise, args[0] is the error
+		String::Utf8Value err(args[0]);
+		printf("%s\n", *err);
+	}
+
+	return Undefined();
+}
+
 
 int main(int argc, char **argv) {
 	if (argc < 2) {
@@ -34,7 +52,7 @@ int main(int argc, char **argv) {
 	model["app"] = argv[0];
 
 	// Render
-	return DustJs::render(argv[1], model);
+	return DustJs::render(argv[1], model, onRender);
 }
 ```
 

@@ -4,14 +4,16 @@
 #include "lib/v8/include/v8.h"
 
 
+typedef v8::Handle<v8::Value> (*onRenderFn)(const v8::Arguments&);
+
+
 class DustJs {
 
 	public:
-		static int render(const std::string filename, const std::map<std::string, std::string> &model);
+		static int render(const std::string filename, const std::map<std::string, std::string> &model, onRenderFn);
 		static int compile(const std::string filename);
 
 	protected:
-		static v8::Handle<v8::Value> onRender(const v8::Arguments &args);
 		static v8::Handle<v8::Value> onLoad(const v8::Arguments &args);
 
 	private:
