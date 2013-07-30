@@ -6,6 +6,7 @@
 #include "libdust.h"
 #include "libcompiler.h"
 #include "libparser.h"
+#include "libhelpers.h"
 
 
 using namespace std;
@@ -27,10 +28,12 @@ int DustJs::render(const string filename, const map<string, string> &model) {
 	const char* lib_dust = reinterpret_cast<const char*>(lib_dust_js);
 	const char* lib_compiler = reinterpret_cast<const char*>(lib_compiler_js);
 	const char* lib_parser = reinterpret_cast<const char*>(lib_parser_js);
+	const char* lib_helpers = reinterpret_cast<const char*>(lib_dust_helpers_js);
 
 	eval(lib_dust);
 	eval(lib_compiler);
 	eval(lib_parser);
+	eval(lib_helpers);
 
 	// Get dust out of the global scope so we can bind it with C++ methods
 	Handle<Object> global = context->Global();

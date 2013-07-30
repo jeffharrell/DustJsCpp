@@ -4,3 +4,6 @@
 [submodule "lib/dustjs"]
 	path = lib/dustjs
 	url = https://github.com/linkedin/dustjs.git
+[submodule "lib/dustjs-helpers"]
+	path = lib/dustjs-helpers
+	url = https://github.com/linkedin/dustjs-helpers.git
