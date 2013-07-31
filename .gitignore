@@ -2,6 +2,7 @@
 libdust.h
 libcompiler.h
 libparser.h
+libhelpers.h
 *.out
 *.a
 *.o
